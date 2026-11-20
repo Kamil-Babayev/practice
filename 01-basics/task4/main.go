@@ -3,8 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 )
+
+var nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
 
 func main() {
 	arg := strings.Join(os.Args[1:], " ")
@@ -14,8 +17,8 @@ func main() {
 
 func wordCount(s string) map[string]int {
 	res := make(map[string]int)
-	for _, w := range strings.Fields(s) {
-		res[w]++
+	for w := range strings.FieldsSeq(s) {
+		res[strings.ToLower(nonAlphanumericRegex.ReplaceAllString(w, ""))]++
 	}
 
 	return res

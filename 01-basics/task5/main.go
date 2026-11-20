@@ -2,17 +2,32 @@ package main
 
 import (
 	"fmt"
+	"strings"
+	"unicode"
 )
 
 func main() {
 
-	test := "abcbad"
+	test := "А роза упала на лапу Азора"
 	fmt.Println(isPalindrome(test))
 }
 
 func isPalindrome(s string) bool {
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		if s[i] != s[j] {
+	runes := []rune(strings.ToLower(s))
+
+	n := 0
+
+	for _, r := range runes {
+		if unicode.IsLetter(r) {
+			runes[n] = r
+			n++
+		}
+	}
+
+	runes = runes[:n]
+
+	for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+		if runes[i] != runes[j] {
 			return false
 		}
 	}

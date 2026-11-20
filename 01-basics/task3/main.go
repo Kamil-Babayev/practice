@@ -12,12 +12,15 @@ func main() {
 }
 
 func stats(nums []int) (sum int, avg float64) {
+	if len(nums) == 0 {
+		return 0, 0
+	}
+
 	for _, i := range nums {
 		sum += i
 	}
 
-	//if sum == 0 then either len(nums) == 0 or sum of given nums is 0
-	// both cases we should return 0 as avg
+	//if sum == 0 then we return 0 as avg
 	if sum != 0 {
 		avg = float64(sum) / float64(len(nums))
 	}

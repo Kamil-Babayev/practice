@@ -11,5 +11,5 @@ func main() {
 	if len(os.Args) > 1 {
 		s = strings.Join(os.Args[1:], " ")
 	}
-	fmt.Printf("Hello, %s!", s)
+	fmt.Printf("Hello, %s! \n", s)
 }
