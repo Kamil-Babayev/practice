@@ -20,5 +20,7 @@ func stats(nums []int) (sum int, avg float64) {
 		sum += i
 	}
 
+	avg = float64(sum) / float64(len(nums))
+
 	return
 }

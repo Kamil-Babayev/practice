@@ -15,7 +15,12 @@ func main() {
 
 func wordCount(s string) map[string]int {
 	res := make(map[string]int)
-	for _, w := range strings.FieldsFunc(strings.ToLower(s), func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsNumber(r) }) {
+
+	isSeparator := func(r rune) bool {
+		return !unicode.IsLetter(r) && !unicode.IsNumber(r)
+	}
+
+	for _, w := range strings.FieldsFunc(strings.ToLower(s), isSeparator) {
 		res[w]++
 	}
 
