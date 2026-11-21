@@ -3,11 +3,9 @@ package main
 import (
 	"fmt"
 	"os"
-	"regexp"
 	"strings"
+	"unicode"
 )
-
-var nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
 
 func main() {
 	arg := strings.Join(os.Args[1:], " ")
@@ -17,8 +15,8 @@ func main() {
 
 func wordCount(s string) map[string]int {
 	res := make(map[string]int)
-	for w := range strings.FieldsSeq(s) {
-		res[strings.ToLower(nonAlphanumericRegex.ReplaceAllString(w, ""))]++
+	for _, w := range strings.FieldsFunc(strings.ToLower(s), func(r rune) bool { return !unicode.IsLetter(r) && !unicode.IsNumber(r) }) {
+		res[w]++
 	}
 
 	return res

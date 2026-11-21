@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	test := "А роза упала на лапу Азора"
+	test := "1А роза упала на лапу Азора 1"
 	fmt.Println(isPalindrome(test))
 }
 
@@ -18,7 +18,7 @@ func isPalindrome(s string) bool {
 	n := 0
 
 	for _, r := range runes {
-		if unicode.IsLetter(r) {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
 			runes[n] = r
 			n++
 		}

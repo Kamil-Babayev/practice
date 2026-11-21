@@ -20,10 +20,5 @@ func stats(nums []int) (sum int, avg float64) {
 		sum += i
 	}
 
-	//if sum == 0 then we return 0 as avg
-	if sum != 0 {
-		avg = float64(sum) / float64(len(nums))
-	}
-
 	return
 }
