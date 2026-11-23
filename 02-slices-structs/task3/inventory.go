@@ -41,12 +41,12 @@ func (i *Inventory) Remove(name string, qty int) error {
 				return errors.New("Invalid value for quantity, cannot be more than original value")
 			}
 
-			if i.Items[j].Qty == qty {
+			i.Items[j].Qty = i.Items[j].Qty - qty
+
+			if i.Items[j].Qty == 0 {
 				slices.Delete(i.Items, j, j+1)
-				return nil
 			}
 
-			i.Items[j].Qty = i.Items[j].Qty - qty
 			return nil
 		}
 	}
