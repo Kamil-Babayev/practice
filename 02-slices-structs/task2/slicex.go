@@ -8,9 +8,9 @@ func Unique(nums []int) []int {
 	var res []int
 
 	for i := range nums {
-		if !seen[i] {
-			res = append(res, i)
-			seen[i] = true
+		if !seen[nums[i]] {
+			res = append(res, nums[i])
+			seen[nums[i]] = true
 		}
 	}
 
@@ -19,7 +19,7 @@ func Unique(nums []int) []int {
 
 // Reverse reverces the slice in place
 func Reverse[T any](s []T) {
-	for i, j := 0, len(s)-1; i > j; i, j = i+1, j-1 {
+	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
 		s[i], s[j] = s[j], s[i]
 	}
 }
@@ -32,10 +32,10 @@ func Chunk(nums []int, size int) ([][]int, error) {
 		return nil, errors.New("Invalid input, parameter cannot be less or equal to zero")
 	}
 
-	res := make([][]int, len(nums)/size)
+	var res [][]int
 
-	for i := 0; i < len(nums)-1; i++ {
-		res[i/size] = append(res[i/size], i)
+	for i := 0; i < len(nums); i += size {
+		res = append(res, nums[i:min(i+size, len(nums))])
 	}
 
 	return res, nil

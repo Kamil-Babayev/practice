@@ -11,7 +11,7 @@ type Item struct {
 	Qty   int
 }
 
-var ErrNotFound = errors.New("Item not found")
+var ErrNotFound = errors.New("item not found")
 
 type Inventory struct {
 	Items []Item
@@ -44,7 +44,7 @@ func (i *Inventory) Remove(name string, qty int) error {
 			i.Items[j].Qty = i.Items[j].Qty - qty
 
 			if i.Items[j].Qty == 0 {
-				slices.Delete(i.Items, j, j+1)
+				i.Items = slices.Delete(i.Items, j, j+1)
 			}
 
 			return nil
@@ -73,6 +73,6 @@ func (i Inventory) SortedByPrice() []Item {
 
 // SortedByTotalPrice can work on a copy, does not modify, works with value reciever
 func (i Inventory) SortedByTotalPrice() []Item {
-	slices.SortFunc(i.Items, func(a, b Item) int { return int(a.Price*100)*a.Qty - int(b.Price*100)*a.Qty })
+	slices.SortFunc(i.Items, func(a, b Item) int { return int(a.Price*100)*a.Qty - int(b.Price*100)*b.Qty })
 	return i.Items
 }
