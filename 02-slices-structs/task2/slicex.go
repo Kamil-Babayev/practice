@@ -1,6 +1,11 @@
 package slicex
 
-import "errors"
+import (
+	"errors"
+	"slices"
+)
+
+var ErrInvalidInput = errors.New("invalid input value")
 
 // Unique returns a new slice of unique elements of input slice keeping the order
 func Unique(nums []int) []int {
@@ -29,13 +34,13 @@ func Reverse[T any](s []T) {
 // does not share the memory of the input slice, creates a new one
 func Chunk(nums []int, size int) ([][]int, error) {
 	if len(nums) <= 0 || size <= 0 {
-		return nil, errors.New("Invalid input, parameter cannot be less or equal to zero")
+		return nil, ErrInvalidInput
 	}
 
 	var res [][]int
 
 	for i := 0; i < len(nums); i += size {
-		res = append(res, nums[i:min(i+size, len(nums))])
+		res = append(res, slices.Clone(nums[i:min(i+size, len(nums))]))
 	}
 
 	return res, nil

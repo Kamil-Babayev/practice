@@ -1,6 +1,7 @@
 package inventory
 
 import (
+	"cmp"
 	"errors"
 	"slices"
 )
@@ -11,7 +12,10 @@ type Item struct {
 	Qty   int
 }
 
-var ErrNotFound = errors.New("item not found")
+var (
+	ErrNotFound     = errors.New("item not found")
+	ErrInvalidInput = errors.New("invalid input value")
+)
 
 type Inventory struct {
 	Items []Item
@@ -32,13 +36,13 @@ func (i *Inventory) Add(item Item) {
 // Remove modifies original Inventory, needs pointer reciever
 func (i *Inventory) Remove(name string, qty int) error {
 	if qty <= 0 {
-		return errors.New("Invalid value for quantity, cannot be less or equal to zero")
+		return ErrInvalidInput
 	}
 
 	for j := range i.Items {
 		if i.Items[j].Name == name {
 			if i.Items[j].Qty < qty {
-				return errors.New("Invalid value for quantity, cannot be more than original value")
+				return ErrInvalidInput
 			}
 
 			i.Items[j].Qty = i.Items[j].Qty - qty
@@ -54,8 +58,8 @@ func (i *Inventory) Remove(name string, qty int) error {
 	return ErrNotFound
 }
 
-// Total can work on a copy, does not modify, works with value reciever
-func (i Inventory) Total() float64 {
+// Total works on pointer reciever
+func (i *Inventory) Total() float64 {
 	var res float64
 
 	for j := range i.Items {
@@ -65,14 +69,16 @@ func (i Inventory) Total() float64 {
 	return res
 }
 
-// SortedByPrice can work on a copy, does not modify, works with value reciever
-func (i Inventory) SortedByPrice() []Item {
-	slices.SortFunc(i.Items, func(a, b Item) int { return int(a.Price*100) - int(b.Price*100) })
-	return i.Items
+// SortedByPrice works on pointer reciever, does not modify underlying slice
+func (i *Inventory) SortedByPrice() []Item {
+	items := slices.Clone(i.Items)
+	slices.SortFunc(items, func(a, b Item) int { return cmp.Compare(a.Price, b.Price) })
+	return items
 }
 
-// SortedByTotalPrice can work on a copy, does not modify, works with value reciever
-func (i Inventory) SortedByTotalPrice() []Item {
-	slices.SortFunc(i.Items, func(a, b Item) int { return int(a.Price*100)*a.Qty - int(b.Price*100)*b.Qty })
-	return i.Items
+// SortedByTotalPrice works on pointer reciever, does not modify underlying slice
+func (i *Inventory) SortedByTotalPrice() []Item {
+	items := slices.Clone(i.Items)
+	slices.SortFunc(items, func(a, b Item) int { return cmp.Compare(a.Price*float64(a.Qty), b.Price*float64(b.Qty)) })
+	return items
 }

@@ -1,6 +1,7 @@
 package slicex
 
 import (
+	"errors"
 	"slices"
 	"testing"
 )
@@ -76,31 +77,31 @@ func TestChunk(t *testing.T) {
 		nums      []int
 		size      int
 		wantSlice [][]int
-		wantErr   string
+		wantErr   error
 	}{
 		"zero size": {
 			nums:      []int{1, 2},
 			size:      0,
 			wantSlice: nil,
-			wantErr:   "Invalid input, parameter cannot be less or equal to zero",
+			wantErr:   ErrInvalidInput,
 		},
 		"size bigger than slice len": {
 			nums:      []int{1, 2},
 			size:      3,
 			wantSlice: [][]int{{1, 2}},
-			wantErr:   "",
+			wantErr:   nil,
 		},
 		"normal": {
 			nums:      []int{1, 2, 3, 4, 5, 6, 7, 8},
 			size:      2,
 			wantSlice: [][]int{{1, 2}, {3, 4}, {5, 6}, {7, 8}},
-			wantErr:   "",
+			wantErr:   nil,
 		},
 		"nil slice": {
 			nums:      nil,
 			size:      5,
 			wantSlice: nil,
-			wantErr:   "Invalid input, parameter cannot be less or equal to zero",
+			wantErr:   ErrInvalidInput,
 		},
 	}
 
@@ -108,11 +109,11 @@ func TestChunk(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			gotSlice, gotErr := Chunk(tc.nums, tc.size)
 
-			if tc.wantErr != "" {
+			if tc.wantErr != nil {
 				if gotErr == nil {
 					t.Fatalf("got nil error; want %q", tc.wantErr)
 				}
-				if gotErr.Error() != tc.wantErr {
+				if !errors.Is(gotErr, tc.wantErr) {
 					t.Errorf("got error %q; want %q", gotErr.Error(), tc.wantErr)
 				}
 			} else if gotErr != nil {

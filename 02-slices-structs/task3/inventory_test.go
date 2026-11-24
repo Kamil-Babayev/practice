@@ -1,6 +1,8 @@
 package inventory
 
 import (
+	"errors"
+	"math"
 	"slices"
 	"testing"
 )
@@ -42,13 +44,13 @@ func TestRemove(t *testing.T) {
 	cases := map[string]struct {
 		initial Inventory
 		removed Item
-		wantErr string
+		wantErr error
 		want    Inventory
 	}{
 		"empty initial": {
 			initial: Inventory{},
 			removed: Item{"apple", 1.0, 5},
-			wantErr: "item not found",
+			wantErr: ErrNotFound,
 			want:    Inventory{},
 		},
 		"removing same element": {
@@ -59,29 +61,38 @@ func TestRemove(t *testing.T) {
 		"removing non existent item": {
 			initial: Inventory{[]Item{{"apple", 1.0, 5}}},
 			removed: Item{"banana", 1.7, 6},
-			wantErr: "item not found",
+			wantErr: ErrNotFound,
 			want:    Inventory{[]Item{{"apple", 1.0, 5}}},
 		},
 		"removing more than exists": {
 			initial: Inventory{[]Item{{"apple", 1.0, 5}}},
 			removed: Item{"apple", 1.0, 6},
-			wantErr: "Invalid value for quantity, cannot be more than original value",
+			wantErr: ErrInvalidInput,
 			want:    Inventory{[]Item{{"apple", 1.0, 5}}},
 		},
 		"removing less than zero": {
 			initial: Inventory{[]Item{{"apple", 1.0, 5}}},
 			removed: Item{"apple", 1.0, -5},
-			wantErr: "Invalid value for quantity, cannot be less or equal to zero",
+			wantErr: ErrInvalidInput,
 			want:    Inventory{[]Item{{"apple", 1.0, 5}}},
 		},
 	}
 
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
-			err := tc.initial.Remove(tc.removed.Name, tc.removed.Qty)
-			if err != nil && err.Error() != tc.wantErr {
-				t.Errorf("Remove(%v) resulted in %v; want %v", err.Error(), tc.initial, tc.wantErr)
+			gotErr := tc.initial.Remove(tc.removed.Name, tc.removed.Qty)
+
+			if tc.wantErr != nil {
+				if gotErr == nil {
+					t.Fatalf("got nil error; want %q", tc.wantErr)
+				}
+				if !errors.Is(gotErr, tc.wantErr) {
+					t.Errorf("got error %q; want %q", gotErr.Error(), tc.wantErr)
+				}
+			} else if gotErr != nil {
+				t.Fatalf("unexpected error: %v", gotErr)
 			}
+
 			if !slices.Equal(tc.initial.Items, tc.want.Items) {
 				t.Errorf("Remove(%v) resulted in %v; want %v", tc.removed, tc.initial, tc.want)
 			}
@@ -107,7 +118,7 @@ func TestTotal(t *testing.T) {
 	for name, tc := range cases {
 		t.Run(name, func(t *testing.T) {
 			got := tc.initial.Total()
-			if got != tc.want {
+			if math.Abs(got-tc.want) > 1e-9 {
 				t.Errorf("Total(%v) resulted in %v; want %v", tc.initial, got, tc.want)
 			}
 		})
