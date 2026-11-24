@@ -101,7 +101,7 @@ func TestChunk(t *testing.T) {
 			nums:      nil,
 			size:      5,
 			wantSlice: nil,
-			wantErr:   ErrInvalidInput,
+			wantErr:   nil,
 		},
 	}
 

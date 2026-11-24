@@ -33,7 +33,7 @@ func Reverse[T any](s []T) {
 // if length of input slice or size param is less than or equal to zero returns an error
 // does not share the memory of the input slice, creates a new one
 func Chunk(nums []int, size int) ([][]int, error) {
-	if len(nums) <= 0 || size <= 0 {
+	if size <= 0 {
 		return nil, ErrInvalidInput
 	}
 

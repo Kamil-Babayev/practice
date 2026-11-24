@@ -72,13 +72,13 @@ func (i *Inventory) Total() float64 {
 // SortedByPrice works on pointer reciever, does not modify underlying slice
 func (i *Inventory) SortedByPrice() []Item {
 	items := slices.Clone(i.Items)
-	slices.SortFunc(items, func(a, b Item) int { return cmp.Compare(a.Price, b.Price) })
+	slices.SortStableFunc(items, func(a, b Item) int { return cmp.Compare(a.Price, b.Price) })
 	return items
 }
 
 // SortedByTotalPrice works on pointer reciever, does not modify underlying slice
 func (i *Inventory) SortedByTotalPrice() []Item {
 	items := slices.Clone(i.Items)
-	slices.SortFunc(items, func(a, b Item) int { return cmp.Compare(a.Price*float64(a.Qty), b.Price*float64(b.Qty)) })
+	slices.SortStableFunc(items, func(a, b Item) int { return cmp.Compare(a.Price*float64(a.Qty), b.Price*float64(b.Qty)) })
 	return items
 }
