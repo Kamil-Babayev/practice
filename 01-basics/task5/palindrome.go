@@ -1,16 +1,9 @@
-package main
+package palindrome
 
 import (
-	"fmt"
 	"strings"
 	"unicode"
 )
-
-func main() {
-
-	test := "1А роза упала на лапу Азора 1"
-	fmt.Println(isPalindrome(test))
-}
 
 func isPalindrome(s string) bool {
 	runes := []rune(strings.ToLower(s))

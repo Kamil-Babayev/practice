@@ -1,17 +1,9 @@
-package main
+package wordcount
 
 import (
-	"fmt"
-	"os"
 	"strings"
 	"unicode"
 )
-
-func main() {
-	arg := strings.Join(os.Args[1:], " ")
-
-	fmt.Println(wordCount(arg))
-}
 
 func wordCount(s string) map[string]int {
 	res := make(map[string]int)
